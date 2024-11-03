@@ -1,6 +1,9 @@
-const request = require("supertest");
+import request from "supertest";
+import app from "../src/app.js";
+import database from "../database.js";
 
-const app = require("../src/app");
+// Fermer la connexion à la BDD après tous les tests
+afterAll(() => database.end());
 
 describe("GET /api/movies", () => {
   it("should return all movies", async () => {

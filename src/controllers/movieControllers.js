@@ -1,47 +1,52 @@
-const movies = [
-  {
-    id: 1,
-    title: "Citizen Kane",
-    director: "Orson Wells",
-    year: "1941",
-    color: false,
-    duration: 120,
-  },
-  {
-    id: 2,
-    title: "The Godfather",
-    director: "Francis Ford Coppola",
-    year: "1972",
-    color: true,
-    duration: 180,
-  },
-  {
-    id: 3,
-    title: "Pulp Fiction",
-    director: "Quentin Tarantino",
-    year: "1994",
-    color: true,
-    duration: 180,
-  },
-];
+// Import de la base de données
+import database from "../../database.js";
 
-const getMovies = (req, res) => {
-  res.json(movies);
-};
-
-const getMovieById = (req, res) => {
-  const id = parseInt(req.params.id);
-
-  const movie = movies.find((movie) => movie.id === id);
-
-  if (movie != null) {
-    res.json(movie);
-  } else {
-    res.status(404).send("Not Found");
+// Récupérer tous les films
+export const getMovies = async (req, res) => {
+  try {
+    const [movies] = await database.query("SELECT * from movies");
+    res.status(200).json(movies);
+  } catch (err) {
+    res.status(500).send("Erreur lors de la récupération des films");
   }
 };
 
-module.exports = {
-  getMovies,
-  getMovieById,
+// Récupérer un film par ID
+export const getMovieById = async (req, res) => {
+  const id = parseInt(req.params.id);
+  try {
+    const [movie] = await database.query("SELECT * from movies WHERE `id` = ?", [id]);
+    if (movie.length > 0) {
+      res.json(movie);
+    } else {
+      res.status(404).send("Le film recherché n'existe pas");
+    }
+  } catch (err) {
+    res.status(500).send("Erreur dans la tentative de récupération du film");
+  }
+};
+
+// Récupérer tous les utilisateurs
+export const getUsers = async (req, res) => {
+  try {
+    const [users] = await database.query("SELECT * FROM users");
+    res.status(200).json(users);
+  } catch (err) {
+    res.status(500).send("Erreur lors de la récupération des utilisateurs");
+  }
+};
+
+// Récupérer un utilisateur par ID
+export const getUsersByID = async (req, res) => {
+  const id = parseInt(req.params.id);
+  try {
+    const [user] = await database.query("SELECT * from users WHERE `id` = ?", [id]);
+    if (user.length > 0) {
+      res.json(user);
+    } else {
+      res.status(404).send("L'utilisateur recherché n'existe pas");
+    }
+  } catch (err) {
+    res.status(500).send("Erreur dans la tentative de récupération de l'utilisateur");
+  }
 };

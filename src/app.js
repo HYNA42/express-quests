@@ -1,10 +1,13 @@
-const express = require("express");
+// Créer l'application Express
+import express from "express";
+import { getMovies, getMovieById, getUsers, getUsersByID } from "./controllers/movieControllers.js";
 
 const app = express();
 
-const movieControllers = require("./controllers/movieControllers");
+// Déclarer les routes
+app.get("/api/movies", getMovies);
+app.get("/api/movies/:id", getMovieById);
+app.get("/api/users", getUsers);
+app.get("/api/users/:id", getUsersByID);
 
-app.get("/api/movies", movieControllers.getMovies);
-app.get("/api/movies/:id", movieControllers.getMovieById);
-
-module.exports = app;
+export default app;
