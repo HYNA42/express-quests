@@ -1,6 +1,8 @@
 // Import de la base de données
 import database from "../../database.js";
 
+/**-------------------------FILM----------------------------------*/
+
 // Récupérer tous les films
 export const getMovies = async (req, res) => {
   try {
@@ -10,7 +12,7 @@ export const getMovies = async (req, res) => {
     const max_duration = req.query.max_duration;
     if (color != null) {
       sql += " WHERE color = ?";
-      sqlValues.push(color);
+      sqlValues.push(color, max_duration);
     }
 
     if (max_duration != null) {
@@ -43,6 +45,29 @@ export const getMovieById = async (req, res) => {
     res.status(500).send("Erreur dans la tentative de récupération du film");
   }
 };
+
+// Créer un nouveau film
+export const postMovie = async (req, res) => {
+  const { title, director, year, color, duration } = req.body;
+
+  try {
+    const sql =
+      "INSERT INTO `movies`(`title`, `director`, `year`, `color`, `duration`) VALUES (?,?,?,?,?)";
+    const values = [title, director, year, color, duration];
+    const [result] = await database.execute(sql, values); // Utilise execute()
+
+    console.log(result);
+    res.status(201).json({
+      message: "Film ajouté avec succès!,Post route is working 🎉",
+      id: result.insertId,
+    });
+  } catch (err) {
+    console.error("Erreur SQL:", err); // Log l'erreur pour plus de détails
+    res.status(500).send("Erreur dans la tentative de création du film");
+  }
+};
+
+/**-----------------------UTILISATEURs---------------------------------*/
 
 // Récupérer tous les utilisateurs
 export const getUsers = async (req, res) => {
@@ -87,5 +112,29 @@ export const getUsersByID = async (req, res) => {
     res
       .status(500)
       .send("Erreur dans la tentative de récupération de l'utilisateur");
+  }
+};
+
+//creer un nouvel utilisateur
+export const postUser = async (req, res) => {
+  const { firstname, lastname, email, city, language } = req.body;
+
+  try {
+    const sql =
+      "INSERT INTO `users`(`firstname`, `lastname`, `email`, `city`, `language`) VALUES (?,?,?,?,?)";
+    const values = [firstname, lastname, email, city, language];
+    const [result] = await database.execute(sql, values); // Utilise execute()
+
+    console.log(result);
+    res.status(201).json({
+      message:
+        "Nouveau utilisateur ajouté avec succès!,Post route is working 🎉",
+      id: result.insertId,
+    });
+  } catch (err) {
+    console.error("Erreur SQL:", err); // Log l'erreur pour plus de détails
+    res
+      .status(500)
+      .send("Erreur dans la tentative de création de l'utilisateur");
   }
 };
