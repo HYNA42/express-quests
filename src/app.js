@@ -6,7 +6,9 @@ import {
   getUsers,
   getUsersByID,
     postMovie,
-  postUser
+  postUser,
+  putMovie,
+  putUser
 } from "./controllers/movieControllers.js";
 
 const app = express();
@@ -16,8 +18,13 @@ app.use(express.json()); // Permet à Express de lire les données JSON
 app.get("/api/movies", getMovies);
 app.get("/api/movies/:id", getMovieById);
 app.post("/api/movies", postMovie);
+app.put("/api/movies/:id", putMovie);
+
+
+
 app.get("/api/users", getUsers);
 app.get("/api/users/:id", getUsersByID);
 app.post("/api/users", postUser);
+app.put("/api/users/:id", putUser);
 
 export default app;

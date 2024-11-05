@@ -1,9 +1,9 @@
 // Import de la base de données
 import database from "../../database.js";
 
-/**-------------------------FILM----------------------------------*/
+/**------------------------- FILMS ----------------------------------*/
 
-// Récupérer tous les films
+// GET Récupérer tous les films
 export const getMovies = async (req, res) => {
   try {
     let sql = "SELECT * from movies";
@@ -28,7 +28,7 @@ export const getMovies = async (req, res) => {
   }
 };
 
-// Récupérer un film par ID
+// GET Récupérer un film par ID
 export const getMovieById = async (req, res) => {
   const id = parseInt(req.params.id);
   try {
@@ -46,8 +46,9 @@ export const getMovieById = async (req, res) => {
   }
 };
 
-// Créer un nouveau film
+// POST Créer un nouveau film
 export const postMovie = async (req, res) => {
+  //destructuration de req.body
   const { title, director, year, color, duration } = req.body;
 
   try {
@@ -67,9 +68,32 @@ export const postMovie = async (req, res) => {
   }
 };
 
+//PUT mettre à jour un film
+export const putMovie = async (req, res) => {
+  try {
+    //destructuration de req.body
+    const { title, director, year, color, duration } = req.body;
+    const id = parseInt(req.params.id);
+    const sql =
+      "UPDATE `movies` SET `title`= ?,`director` = ?, `year` = ?,  `color` = ?, `duration` = ?  WHERE `id` = ?  ";
+    const values = [title, director, year, color, duration, id];
+
+    const [result] = await database.execute(sql, values);
+    console.log(result);
+    if (result.affectedRows === 0) {
+      res.sendStatus(404); // Aucun film mis à jour
+    } else {
+      res.sendStatus(204); // Mise à jour réussie sans contenu de retour
+    }
+  } catch (err) {
+    res.status(500).send("Erreur dans la tentative de modification du film");
+    console.log(err);
+  }
+};
+
 /**-----------------------UTILISATEURs---------------------------------*/
 
-// Récupérer tous les utilisateurs
+// GET Récupérer tous les utilisateurs
 export const getUsers = async (req, res) => {
   try {
     let sql = "SELECT * FROM users";
@@ -96,7 +120,7 @@ export const getUsers = async (req, res) => {
   }
 };
 
-// Récupérer un utilisateur par ID
+// GET Récupérer un utilisateur par ID
 export const getUsersByID = async (req, res) => {
   const id = parseInt(req.params.id);
   try {
@@ -115,7 +139,7 @@ export const getUsersByID = async (req, res) => {
   }
 };
 
-//creer un nouvel utilisateur
+//POST creer un nouvel utilisateur
 export const postUser = async (req, res) => {
   const { firstname, lastname, email, city, language } = req.body;
 
@@ -136,5 +160,30 @@ export const postUser = async (req, res) => {
     res
       .status(500)
       .send("Erreur dans la tentative de création de l'utilisateur");
+  }
+};
+
+//PUT mettre à jour un utilisateur
+export const putUser = async (req, res) => {
+  try {
+    //destructuration de req.body
+    const { firstname, lastname, email, city, language } = req.body;
+    const id = parseInt(req.params.id);
+    const sql =
+      "UPDATE `users` SET `firstname`= ?,`lastname` = ?, `email` = ?,  `city` = ?, `language` = ?  WHERE `id` = ?  ";
+    const values = [firstname, lastname, email, city, language, id];
+
+    const [result] = await database.execute(sql, values);
+    console.log(result);
+    if (result.affectedRows === 0) {
+      res.sendStatus(404); // Aucun utilisateur mis à jour
+    } else {
+      res.sendStatus(204); // Mise à jour réussie sans contenu de retour
+    }
+  } catch (err) {
+    res
+      .status(500)
+      .send("Erreur dans la tentative de modification de l'utilisateur");
+    console.log(err);
   }
 };
