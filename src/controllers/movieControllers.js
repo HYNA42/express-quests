@@ -90,7 +90,25 @@ export const putMovie = async (req, res) => {
     console.log(err);
   }
 };
+//DELETE supprimer un film
+export const deleteMovie = async (req, res) => {
+  try {
+    const id = parseInt(req.params.id);
+    const sql = "DELETE FROM `movies` WHERE `id` = ?";
+    const values = [id];
 
+    const [result] = await database.execute(sql, values);
+    if (result.affectedRows === 0) {
+      res.sendStatus(404);
+    } else {
+      res.sendStatus(204);
+    }
+    console.log(result);
+  } catch (err) {
+    console.log(err);
+    res.status(500).send("Erreur dans la tentative de suppression du film");
+  }
+};
 /**-----------------------UTILISATEURs---------------------------------*/
 
 // GET Récupérer tous les utilisateurs
@@ -185,5 +203,27 @@ export const putUser = async (req, res) => {
       .status(500)
       .send("Erreur dans la tentative de modification de l'utilisateur");
     console.log(err);
+  }
+};
+
+//DELETE supprimer un utilisateur
+export const deleteUser = async (req, res) => {
+  try {
+    const id = parseInt(req.params.id);
+    const sql = "DELETE FROM `users` WHERE `id` = ?";
+    const values = [id];
+
+    const [result] = await database.execute(sql, values);
+    if (result.affectedRows === 0) {
+      res.sendStatus(404);
+    } else {
+      res.sendStatus(204);
+    }
+    console.log(result);
+  } catch (err) {
+    console.log(err);
+    res
+      .status(500)
+      .send("Erreur dans la tentative de suppression de l'utilisateur");
   }
 };
